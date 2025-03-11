@@ -1,0 +1,107 @@
+CREATE DATABASE cliente;
+USE cliente;
+
+
+CREATE TABLE categoria_cliente(
+id_categoria_cliente INT NOT NULL AUTO_INCREMENT,
+nome_categoria_cliente VARCHAR(100),
+PRIMARY KEY (id_categoria_cliente)
+);
+
+
+CREATE TABLE cliente(
+id_cliente INT NOT NULL AUTO_INCREMENT,
+nome_cliente VARCHAR(100),
+cpf BIGINT,
+num_celular VARCHAR(11),
+rua VARCHAR(100),
+numero INT,
+bairro VARCHAR(100),
+cep CHAR(9),
+cidade VARCHAR(100),
+estado VARCHAR(100),
+categoria_cliente_id INT,
+PRIMARY KEY (id_cliente),
+FOREIGN KEY (categoria_cliente_id)
+REFERENCES categoria_cliente (id_categoria_cliente)
+);
+
+
+CREATE TABLE agencia(
+id_agencia INT NOT NULL AUTO_INCREMENT,
+nome_agencia VARCHAR(100),
+PRIMARY KEY (id_agencia)
+);
+
+
+CREATE TABLE tipo_conta(
+id_tipo_conta INT NOT NULL AUTO_INCREMENT,
+tipo_conta VARCHAR(100),
+PRIMARY KEY (id_tipo_conta)
+);
+
+
+CREATE TABLE conta(
+id_conta INT NOT NULL AUTO_INCREMENT,
+saldo DECIMAL(8,2),
+tipo_conta_id INT,
+cliente_id INT,
+agencia_id INT,
+PRIMARY KEY (id_conta),
+FOREIGN KEY (tipo_conta_id)
+REFERENCES tipo_conta (id_tipo_conta),
+FOREIGN KEY (cliente_id)
+REFERENCES cliente (id_cliente),
+FOREIGN KEY (agencia_id)
+REFERENCES agencia (id_agencia)
+);
+
+
+
+select * from tipo_conta;
+
+/* INSIRA 8 CLIENTES NA TABELA CLIENTE */
+INSERT INTO cliente
+(nome_cliente, cpf, num_celular, rua, numero, bairro, cep,
+cidade, estado)
+ values 
+('Marcos', 12547251990, 48991942002,'joao gualberto',45,
+'campeche', 88051-431,'floripa','SC'),
+('Marcelo', 23547251990 ,48991942003,'julia gualberto',55,
+'ingleses', 88051-432,'floripa','SC'),
+('Aurea', 65447251933, 48991944444,'figueira',66,
+'ribeirão', 88051-874,'floripa','SC'),
+('João', 87947251977, 48991943333,'alvorada',99,
+'joão paulo', 88051-999,'floripa','SC'),
+('Guilherme', 02147251936, 48991946666,'coimbra',59,
+'monte verde', 88051-111,'floripa','SC'),
+('Michelly', 89747251990, 48991948795,'jose daux',14,
+'cacupé', 88051-888,'floripa','SC'),
+('Juliano', 12547251988, 48991947894,'jacinto',13,
+'santo antonio', 88051-431,'floripa','SC'),
+('Julia', 13081021944, 48991941831,'isabel',12,
+'sambaqui', 88051-132,'floripa','SC');
+
+/* INSIRA 4 CATEGORIA CLIENTE */
+INSERT INTO categoria_cliente
+(nome_categoria_cliente) values 
+('Private'), ('Exclusive'), ('Gold'), ('Básico');
+
+/* INSIRA 3 AGENCIAS */
+INSERT INTO agencia 
+(nome_agencia) values
+('Campeche'), ('Ingleses'), ('Centro');
+
+/* INSIRA 1 CONTA PARA CADA CLIENTE */
+INSERT INTO conta
+(saldo, tipo_conta_id, cliente_id, agencia_id) values
+ (2000, 1, 1, 1), (3000, 2, 2, 2), (4000, 2, 3, 3), (5000, 1, 4,1),
+ (7000,1, 5,3), (8000,2,6,3), (8000,2,7,1), (9000,2,8,2);
+
+/* INSIRA 2 TIPOS DE CONTA */
+INSERT INTO tipo_conta
+(tipo_conta) values ('Poupança'), ('Corrente');
+
+SELECT * FROM cliente;
+SELECT * FROM categoria_cliente;
+SELECT * FROM conta;
