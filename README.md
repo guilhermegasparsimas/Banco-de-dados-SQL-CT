@@ -1,2 +1,2 @@
 # Banco-de-dados-SQL-CT
-Tudo sobre aulas de Banco de Dados
+Conteúdo com base nas aulas do Curso Técnico de Desenvolvimento de Sistemas em Sesi Senai SC, Florianópolis.
