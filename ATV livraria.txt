@@ -1,0 +1,137 @@
+CREATE DATABASE livraria;
+USE livraria;
+
+
+CREATE TABLE cliente(
+id_cliente INT NOT NULL AUTO_INCREMENT,
+nome_cliente VARCHAR(45),
+rg_cliente INT,
+cpf_cliente BIGINT,
+PRIMARY KEY(id_cliente)
+);
+
+CREATE TABLE financiador(
+id_financiador INT NOT NULL AUTO_INCREMENT,
+nome_financiador VARCHAR(45),
+cnpj_financiador BIGINT(14),
+PRIMARY KEY(id_financiador)
+);
+
+CREATE TABLE autor(
+id_autor INT NOT NULL AUTO_INCREMENT,
+nome_autor VARCHAR(45),
+rg_autor INT,
+PRIMARY KEY(id_autor)
+);
+
+CREATE TABLE editora(
+id_editora INT NOT NULL AUTO_INCREMENT,
+nomeFantasia_editora VARCHAR(45),
+razaoSocial_editora VARCHAR(45),
+rua VARCHAR(100),
+cep INT,
+numero VARCHAR(100),
+telefone BIGINT(11),
+PRIMARY KEY(id_editora)
+);
+
+CREATE TABLE livro(
+id_livro INT NOT NULL AUTO_INCREMENT,
+isbn_livro BIGINT,
+titulo_livro VARCHAR(45),
+preco_livro DECIMAL(8,2),
+categoria_livro VARCHAR(45),
+editora_id INT,
+autor_id INT,
+financiador_id INT,
+PRIMARY KEY(id_livro),
+FOREIGN KEY (editora_id)
+REFERENCES editora (id_editora),
+FOREIGN KEY (autor_id)
+REFERENCES autor (id_autor),
+FOREIGN KEY (financiador_id)
+REFERENCES financiador (id_financiador)
+);
+
+CREATE TABLE pedido(
+id_pedido INT NOT NULL AUTO_INCREMENT,
+qtd_pedido INT,
+livro_id INT,
+cliente_id INT,
+PRIMARY KEY(id_pedido),
+FOREIGN KEY (livro_id)
+REFERENCES livro (id_livro),
+FOREIGN KEY (cliente_id)
+REFERENCES cliente (id_cliente)
+);
+
+
+
+INSERT INTO cliente
+(nome_cliente, rg_cliente, cpf_cliente)
+values ('João', 7590156, 12547251990), ('Giulia', 1346825, 34562158963),('Mariana', 4671597, 24716487239),
+('Clayton', 8540156, 35287951970),('Maria', 9254836, 34698521478)
+;
+select * from cliente;
+
+INSERT INTO financiador
+(nome_financiador, cnpj_financiador) 
+values ('Marcelo',55600866000125),('Gleimon',29463290000191),('Marcos',26275140000166),('Juliana',59440278000122),
+('Juca',36152675000101)
+;
+select * from financiador;
+
+INSERT INTO autor
+(nome_autor, rg_autor)
+values ('Jucelio', 143373444),('Mariano', 383294952),('Melody',298735295),('Thiago',169857050),('Taironi',444786910)
+;
+select * from autor;
+
+INSERT INTO editora
+(nomeFantasia_editora, razaoSocial_editora, rua, cep, numero, telefone)
+values ('Coca-cola','Industria Alimentos Coca_cola','Ademir jailson',88162246,42,48991942002),
+('Nestle','Industria Alimentos Nestle','Domingos Zimmerman',88051431,10,48988641823),
+('Sadia','Industria Alimentos Sadia','Jornalista Jaime',88062451,54,48991301821),
+('Perdigão','Industria Alimentos Perdigão','Isabel Jacinto',88574681,66,48991279845),
+('Lar','Industria Alimentos Lar','Joana Rosa',88952345,99,48984286566);
+select * from editora;
+
+INSERT INTO pedido
+(qtd_pedido) 
+values (10), (20), (30), (40), (50);
+select * from pedido;
+
+INSERT INTO livro
+(isbn_livro, titulo_livro,preco_livro,categoria_livro)
+values (01,'Pequeno Principe', 100.00, 'Aventura'),(02,'Floresta Negra', 150.00, 'Suspense'),
+(03,'Amor incondicional', 200.00, 'Romance'),(04,'O Protetor', 250.00, 'Ação'),
+(05,'Peter Pan', 350.00, 'Fantasia');
+select * from livro;
+
+
+INSERT INTO livro
+(isbn_livro, titulo_livro, preco_livro, categoria_livro , editora_id, autor_id, financiador_id)
+values (100,'LL',0 ,'pp','1', '1', '1'),(200,'MM',0 ,'cc','2', '2', '2'),(300,'ZZ',0 ,'ll','3', '3', '3'),
+(400,'LL',0 ,'pp','4', '4', '4'),(500,'LL',0 ,'pp','5', '5', '5');
+
+INSERT INTO pedido
+(qtd_pedido, livro_id, cliente_id)
+values (1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,5);
+
+DELETE FROM financiador
+WHERE id_financiador =1;
+
+DELETE FROM editora
+WHERE id_editora =1;
+
+DELETE FROM autor
+WHERE id_autor =1;
+
+DELETE FROM cliente
+WHERE id_cliente =1;
+
+DELETE FROM livro
+WHERE id_livro =1;
+
+
+
