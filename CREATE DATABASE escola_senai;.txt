@@ -1,0 +1,104 @@
+CREATE DATABASE escola_senai;
+USE escola_senai;
+
+CREATE TABLE aluno(
+id_aluno INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR(100),
+PRIMARY KEY(id_aluno)
+);
+
+CREATE TABLE curso(
+id_curso INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR(100),
+duracao INT,
+PRIMARY KEY(id_curso)
+);
+
+CREATE TABLE inscricao(
+id_inscricao INT NOT NULL AUTO_INCREMENT,
+dt_inscricao DATE,
+aluno_id INT,
+curso_id INT,
+PRIMARY KEY(id_inscricao),
+FOREIGN KEY(aluno_id)
+REFERENCES aluno(id_aluno),
+FOREIGN KEY(curso_id)
+REFERENCES curso(id_curso)
+);
+
+CREATE TABLE mensalidade(
+id_mensalidade INT NOT NULL AUTO_INCREMENT,
+dt_vencimento DATE,
+valor DECIMAL(8,2),
+status_pagamento ENUM('Pago','Nao pago'),
+inscricao_id INT,
+PRIMARY KEY(id_mensalidade),
+FOREIGN KEY(inscricao_id)
+REFERENCES inscricao(id_inscricao)
+);
+
+INSERT INTO aluno (nome) values 
+('Joao'),('Maria'),('Helena'),('Thiago'),('Emilly');
+ select * from mensalidade;
+ 
+INSERT INTO curso (nome,duracao) values 
+('Elétrica',100),('Radiologia',120),('Segurança da Informação',150),('Nutrição',140),('Enfermagem',200);
+
+INSERT INTO inscricao (dt_inscricao,aluno_id,curso_id) values
+('2020-01-02',4,4),('2020-01-02',3,3),('2020-01-02',2,2),('2020-06-02',4,4),('2020-06-02',3,3),
+('2020-06-02',2,2);
+INSERT INTO inscricao (dt_inscricao) values ('2020-06-02');
+
+INSERT INTO mensalidade (dt_vencimento,valor,status_pagamento,inscricao_id) values
+('2020-01-10',550,'Pago',1),
+('2020-01-10',540,'Pago',2),
+('2020-01-10',530,'Pago',3),
+('2020-06-10',580,'Nao pago',4),
+('2020-06-10',570,'Nao pago',5),
+('2020-06-10',560,'Nao pago',6);
+
+-- SOMA DAS MENSALIDADES POR ALUNO
+SELECT aluno.nome, sum(mensalidade.valor) AS valor_mensalidade_alunos FROM mensalidade
+JOIN inscricao
+ON inscricao.id_inscricao = mensalidade.inscricao_id
+JOIN aluno 
+ON aluno.id_aluno = inscricao.aluno_id
+GROUP BY aluno.nome;
+
+-- SOMA DE MENSALIDADES NÂO PAGAS
+SELECT  sum(mensalidade.valor) AS mensalidades_nao_pagas FROM mensalidade
+WHERE status_pagamento = 'Nao pago';
+
+-- VALOR MÈDIO DE MENSALIDADE PAGA POR ALUNO
+SELECT aluno.nome, AVG(mensalidade.valor) AS valor_medio_mensalidade FROM mensalidade
+JOIN inscricao
+ON inscricao.id_inscricao = mensalidade.inscricao_id
+JOIN aluno 
+ON aluno.id_aluno = inscricao.aluno_id
+GROUP BY aluno.nome;
+
+-- VALOR MÀXIMO DE MENSALIDADE
+SELECT  max(mensalidade.valor) AS valor_maximo_mensalidades FROM mensalidade;
+
+-- VALOR MINIMO MENSALIDADE
+SELECT  min(mensalidade.valor) AS valor_minimo_mensalidades FROM mensalidade;
+
+-- VALOR MINIMO MENSALIDADE NAO PAGA
+SELECT  min(mensalidade.valor) AS valor_minimo_mensalidades_nao_pagas FROM mensalidade
+WHERE status_pagamento = 'Nao pago';
+
+SELECT DISTINCT aluno.nome FROM aluno;
+SELECT aluno.nome FROM aluno
+GROUP BY aluno.nome;
+
+-- MENSALIDADES ENTRE 2020-06-10
+SELECT sum(mensalidade.valor)  FROM mensalidade
+WHERE dt_vencimento < '2020-06-10';
+
+-- MENSALIDADES ENTRE 2020-06-09
+SELECT sum(mensalidade.valor) FROM mensalidade
+WHERE dt_vencimento > '2020-06-09';
+
+-- MENSALIDADES ENTRE id=2 e id=5
+SELECT sum(mensalidade.valor) FROM mensalidade
+WHERE id_mensalidade >= 2 and id_mensalidade <= 5;

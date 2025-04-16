@@ -1,0 +1,25 @@
+CREATE DATABASE loja_y;
+USE loja_y;
+
+CREATE TABLE estacionamento(
+id_estacionamento INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR(45),
+capacidade INT,
+subsolo ENUM('Sim','Nao'),
+especial ENUM('Sim','Nao'),
+PRIMARY KEY(id_estacionamento)
+);
+
+INSERT INTO estacionamento
+(nome, capacidade, subsolo, especial) values 
+('Estacionamento A',20,'Nao','Nao'),
+('Estacionamento B',35,'Sim','Sim'),
+('Estacionamento C',40,'Sim','Sim'),
+('Estacionamento D',50,'Sim','Sim'),
+('Estacionamento E',15,'Sim','Nao'),
+('Estacionamento F',85,'Sim','Sim'),
+('Estacionamento G',100,'Nao','Nao');
+select * from estacionamento;
+
+SELECT estacionamento.nome, estacionamento.capacidade FROM estacionamento
+WHERE capacidade >= 20 and capacidade <=40 and subsolo = 'Sim' and especial = 'Sim';

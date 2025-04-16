@@ -1,0 +1,80 @@
+CREATE DATABASE loja_y;
+USE loja_y;
+
+CREATE TABLE estacionamento(
+id_estacionamento INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR(45),
+capacidade INT,
+subsolo ENUM('Sim','Nao'),
+especial ENUM('Sim','Nao'),
+PRIMARY KEY(id_estacionamento)
+);
+
+INSERT INTO estacionamento
+(nome, capacidade, subsolo, especial) values 
+('Estacionamento A',20,'Nao','Nao'),
+('Estacionamento B',35,'Sim','Sim'),
+('Estacionamento C',40,'Sim','Sim'),
+('Estacionamento D',50,'Sim','Sim'),
+('Estacionamento E',15,'Sim','Nao'),
+('Estacionamento F',85,'Sim','Sim'),
+('Estacionamento G',100,'Nao','Nao');
+SELECT * FROM estacionamento;
+
+SELECT estacionamento.nome, estacionamento.capacidade FROM estacionamento
+WHERE capacidade >= 20 and capacidade <=40 and subsolo = 'Sim' and especial = 'Sim'
+ORDER BY capacidade ASC;
+
+
+CREATE TABLE cliente(
+id_cliente INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR(50),
+PRIMARY KEY(id_cliente)
+);
+
+INSERT INTO cliente (nome) values ('Jose'),('Carlos'), ('Marcos');
+select * from cliente;
+
+CREATE TABLE mensalidade(
+id_mensalidade INT NOT NULL AUTO_INCREMENT,
+cliente_id INT,
+valor DECIMAL(8,2),
+status_pagamento VARCHAR(45),
+PRIMARY KEY(id_mensalidade),
+FOREIGN KEY (cliente_id)
+REFERENCES cliente (id_cliente)
+);
+
+INSERT INTO mensalidade (cliente_id,valor,status_pagamento) values
+(1,650.00,'Fatura Paga'), (2,670.00,'Fatura Paga'),(3,690.00,'Fatura Paga'),(1,720.00,'Em Débito'),
+(2,740.00,'Em Débito'),(3,760.00,'Em Débito'),(3,800.00,'Em Débito');
+INSERT INTO mensalidade (cliente_id,valor,status_pagamento) values (1,820.00,'Em Débito');
+select * from mensalidade;
+
+-- CONTAGEM DE QUANTAS MENSALIDADES CADA CLIENTE POSSUI
+SELECT cliente.nome as nome_cliente, count(mensalidade.status_pagamento) as media_mensalidade 
+FROM mensalidade
+JOIN cliente
+ON cliente.id_cliente = mensalidade.cliente_id
+GROUP BY cliente.nome;
+
+-- SOMA DO VALOR TOTAL DE MENSALIDADES POR CADA CLIENTE
+SELECT cliente.nome, min(mensalidade.valor) as valor_mais_baixo_mensalidade FROM mensalidade
+JOIN cliente
+ON cliente.id_cliente = mensalidade.cliente_id
+GROUP BY cliente.nome;
+-- count, sum, max, min, avg
+
+SELECT * FROM estacionamento 
+WHERE capacidade > 50 
+ORDER BY capacidade DESC; 
+
+SELECT * FROM estacionamento
+WHERE capacidade > 80 OR nome = 'Estacionamento B';
+
+SELECT * FROM estacionamento
+WHERE subsolo = 'Sim' and especial = 'Sim';
+
+SELECT cliente.nome, mensalidade.valor, mensalidade.status_pagamento FROM cliente
+JOIN mensalidade
+ON cliente.id_cliente = mensalidade.cliente_id; 
