@@ -1,0 +1,42 @@
+CREATE DATABASE posto_combustivel;
+USE posto_combustivel;
+
+
+CREATE TABLE tanque(
+id_tanque INT NOT NULL AUTO_INCREMENT,
+combustivel VARCHAR(45),
+preco_combustivel DECIMAL(8,2) DEFAULT(6.5),
+estoque INT  CHECK(estoque>= 0),
+PRIMARY KEY(id_tanque)
+);
+
+CREATE TABLE abastecimento(
+id_abastecimento INT NOT NULL AUTO_INCREMENT,
+quantidade INT,
+tanque_id INT,
+PRIMARY KEY(id_abastecimento),
+FOREIGN KEY(tanque_id)
+REFERENCES tanque(id_tanque)
+);
+
+INSERT INTO tanque (combustivel,estoque) values
+('Gasolina Comun',1000),
+('Gasolina Adtivada',2000); 
+
+DELIMITER $$
+CREATE TRIGGER estoque_atualizado
+AFTER INSERT ON abastecimento
+FOR EACH ROW
+BEGIN
+UPDATE tanque
+SET tanque.estoque = tanque.estoque - new.quantidade
+WHERE tanque.id_tanque = new.tanque_id;
+END;
+$$
+
+INSERT INTO abastecimento(quantidade, tanque_id) values
+(1000,1);
+INSERT INTO abastecimento(quantidade, tanque_id) values
+(45,2);
+
+SELECT * FROM tanque;

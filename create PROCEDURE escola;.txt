@@ -1,0 +1,69 @@
+CREATE DATABASE escola;
+USE escola;
+
+CREATE TABLE estudante(
+id_estudante INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR(45),
+matricula BIGINT(11),
+curso VARCHAR(45),
+cidade VARCHAR(45),
+PRIMARY KEY(id_estudante)
+);
+
+INSERT INTO estudante (nome, matricula, curso, cidade) values
+('Guilherme', 12547251990, 'Teologia', 'Florianópolis'),
+('Eduarda', 96113081099, 'Engenharia', 'Florianópolis'),
+('João', 12345678911, 'Análise de Dados', 'São José'),
+('Michael', 98765432100, 'Administração', 'Biguaçu');
+
+DELIMITER //
+CREATE PROCEDURE dados_estudante_atualizado (
+	IN p_id INT,
+	IN novo_nome VARCHAR(45),
+	IN nova_matricula BIGINT(11),
+	IN novo_curso VARCHAR(45),
+	IN nova_cidade VARCHAR(45)
+)
+BEGIN
+	UPDATE estudante
+	SET nome = novo_nome,
+		matricula = nova_matricula,
+		curso = novo_curso,
+		cidade = nova_cidade
+    WHERE id_estudante = p_id;
+SELECT * FROM estudante;
+END //
+DELIMITER ;
+CALL dados_estudante_atualizado ( 2, 'Gabriel88', 10120230344, 'Dev', 'São José');
+
+DELIMITER //
+CREATE PROCEDURE dados_estudante_deletado (
+    IN p_id INT
+)
+BEGIN 
+	DELETE FROM estudante
+    WHERE id_estudante = p_id;
+    SELECT * FROM estudante;
+END //
+
+DELIMITER ;
+CALL dados_estudante_deletado (2);
+
+DELIMITER $$
+CREATE PROCEDURE quantidade_estudante_curso (
+	IN p_curso VARCHAR(45)
+)
+BEGIN
+SELECT COUNT(nome), curso 
+FROM estudante
+WHERE curso = p_curso
+GROUP BY curso;
+END $$
+DELIMITER ;
+CALL quantidade_estudante_curso ('Teologia');
+
+SELECT COUNT(nome), curso FROM estudante GROUP BY curso;
+
+
+SELECT * FROM estudante;
+drop procedure quantidade_estudante_curso;

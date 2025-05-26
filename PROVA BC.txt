@@ -1,0 +1,130 @@
+CREATE DATABASE prova;
+USE prova;
+
+CREATE TABLE aluno(
+id_aluno INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR(45),
+email VARCHAR(45),
+cpf BIGINT UNIQUE,
+PRIMARY KEY(id_aluno)
+);
+
+CREATE TABLE disciplina(
+id_disciplina INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR(45),
+carga_horaria INT,
+PRIMARY KEY(id_disciplina)
+);
+
+CREATE TABLE turma(
+id_turma INT NOT NULL AUTO_INCREMENT,
+disciplina_id INT,
+turno ENUM('Matutino', 'Vespertino','Noturno'),
+PRIMARY KEY(id_turma),
+FOREIGN KEY(disciplina_id)
+REFERENCES disciplina(id_disciplina)
+);
+
+CREATE TABLE inscricao(
+id_inscricao INT NOT NULL AUTO_INCREMENT,
+aluno_id INT,
+turma_id INT,
+dt_inscricao DATE,
+PRIMARY KEY(id_inscricao),
+FOREIGN KEY(aluno_id)
+REFERENCES aluno(id_aluno),
+FOREIGN KEY(turma_id)
+REFERENCES turma(id_turma)
+);
+
+
+CREATE TABLE mensalidade(
+id_mensalidade INT NOT NULL AUTO_INCREMENT,
+inscricao_id INT,
+dt_vencimento DATE,
+valor DECIMAL(8,2),
+status_pagamento ENUM('Fatura Paga', 'Em Débito'),
+PRIMARY KEY(id_mensalidade),
+FOREIGN KEY(inscricao_id)
+REFERENCES inscricao(id_inscricao)
+);
+
+INSERT INTO aluno(nome, email, cpf) values
+('Giulia','giulia.01@gmail.com',19145699038),
+('Maria','maria.02@gmail.com',49293950030),
+('Manoel','manoel.03@gmail.com',58453881049),
+('Guilherme','guisimas0201@gmail.com',12547251990),
+('João','joão.05@gmail.com',50756398010);
+
+INSERT INTO disciplina(nome, carga_horaria) values
+('Português',50),
+('História',35),
+('Física',40),
+('Sociologia',45),
+('Matemática',50);
+
+INSERT INTO turma(disciplina_id, turno) values
+(1,'Matutino'),
+(2,'Matutino'),
+(3,'Noturno'),
+(4,'Vespertino'),
+(5,'Vespertino');
+
+INSERT INTO inscricao(aluno_id, turma_id, dt_inscricao) values
+(4,1,'2024-01-01'),
+(3,2,'2024-01-01'),
+(2,3,'2024-01-01'),
+(4,1,'2024-06-01'),
+(3,2,'2024-06-01'),
+(2,3,'2024-06-01');
+
+INSERT INTO inscricao(dt_inscricao) values ('2024-06-01');
+
+INSERT INTO mensalidade (inscricao_id,dt_vencimento,valor,status_pagamento) values
+(1,'2024-02-05',600,'Fatura Paga'),
+(2,'2024-02-05',600,'Fatura Paga'),
+(3,'2024-02-05',600,'Fatura Paga'),
+(4,'2024-06-05',700,'Em Débito'),
+(5,'2024-06-05',700,'Em Débito'),
+(6,'2024-06-05',700,'Em Débito');
+select * from mensalidade;
+
+SELECT inscricao.id_inscricao,mensalidade.status_pagamento FROM inscricao
+JOIN mensalidade
+ON inscricao.id_inscricao = mensalidade.inscricao_id
+WHERE mensalidade.status_pagamento = 'Em Débito';
+
+SELECT inscricao.id_inscricao, mensalidade.dt_vencimento, mensalidade.valor FROM inscricao
+JOIN mensalidade
+ON inscricao.id_inscricao = mensalidade.inscricao_id;
+
+SELECT * FROM inscricao
+LEFT JOIN aluno
+ON aluno.id_aluno = inscricao.aluno_id;
+
+SELECT * FROM inscricao
+RIGHT JOIN turma
+ON turma.id_turma = inscricao.turma_id;
+
+SELECT * FROM inscricao
+JOIN aluno
+ON aluno.id_aluno = inscricao.aluno_id
+JOIN turma
+ON turma.id_turma = inscricao.turma_id;
+
+SELECT * FROM inscricao
+LEFT JOIN aluno
+ON aluno.id_aluno = inscricao.aluno_id
+UNION
+SELECT * FROM inscricao
+RIGHT JOIN aluno
+ON aluno.id_aluno = inscricao.aluno_id;
+
+SELECT inscricao.id_inscricao, aluno.nome AS nome_do_aluno, aluno.email AS email_do_aluno FROM inscricao
+JOIN aluno
+ON aluno.id_aluno = inscricao.aluno_id;
+
+CREATE VIEW vw_inscricao_aluno AS
+SELECT inscricao.id_inscricao, aluno.nome AS nome_do_aluno, aluno.email AS email_do_aluno FROM inscricao
+JOIN aluno
+ON aluno.id_aluno = inscricao.aluno_id;
